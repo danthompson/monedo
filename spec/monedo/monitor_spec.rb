@@ -5,10 +5,10 @@ describe Monedo::Monitor do
   describe '#run' do
     let(:address) { '2222' }
     let(:numeric) { '2 22-2[2.2U222  2U22 ]]2UU222U22' }
-    let(:alpha) { 'Message for 2222 <EOT>' }
+    let(:alpha) { 'Message for 2222' }
     let(:address_part) { "POCSAG1200-: Address:    #{address}  Function: 0" }
     let(:numeric_part) { "POCSAG1200-: Numeric: #{numeric}" }
-    let(:alpha_part) { "POCSAG1200-: Alpha: #{alpha}" }
+    let(:alpha_part) { "POCSAG1200-: Alpha: #{alpha} <EOT><NUL>" }
     let(:message_parts) { [ address_part, numeric_part, alpha_part ] }
 
     it 'adds a message composed of parts to the queue' do

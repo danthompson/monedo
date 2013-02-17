@@ -53,19 +53,19 @@ module Monedo
     end
 
     def pluck_address_data(line)
-      pluck_data(:address, '(?<=address:\s\s\s\s)(\d+)', line)
+      pluck_data(:address, '(\d+)', line)
     end
 
     def pluck_numeric_data(line)
-      pluck_data(:numeric, '(?<=numeric:\s)(.+)', line)
+      pluck_data(:numeric, '(.+)', line)
     end
 
     def pluck_alpha_data(line)
-      pluck_data(:alpha, '(?<=alpha:\s)(.+)', line)
+      pluck_data(:alpha, '(?<=^|>)[^><]+?(?=<|$)', line)
     end
 
     def pluck_data(key, pattern, line)
-      data = line[/#{pattern}/i]
+      data = line[/(?<=#{key.to_s}:)(.*)/i][/#{pattern}/i]
 
       (data.nil? || data.strip.empty?) ? {} : { key => data.strip }
     end
