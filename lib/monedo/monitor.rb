@@ -21,7 +21,7 @@ module Monedo
 
         compose(message, line)
 
-        if composed?(message)
+        if valid?(message)
           @queue << message.clone
           display(message)
           message.clear
@@ -50,6 +50,10 @@ module Monedo
 
     def composed?(message)
       [:address, :numeric, :alpha].all? { |k| message.key?(k) }
+    end
+
+    def valid?(message)
+      composed?(message) && !!message[:alpha].index(/\w\s\w/)
     end
 
     def pluck_address_data(line)

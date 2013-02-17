@@ -9,6 +9,7 @@ describe Monedo::Monitor do
     let(:address_part) { "POCSAG1200-: Address:    #{address}  Function: 0" }
     let(:numeric_part) { "POCSAG1200-: Numeric: #{numeric}" }
     let(:alpha_part) { "POCSAG1200-: Alpha: #{alpha} <EOT><NUL>" }
+    let(:bad_alpha_part) { "POCSAG1200-: Alpha: 999<ESC><RS>H,<VT><FF><CR>(1" }
     let(:message_parts) { [ address_part, numeric_part, alpha_part ] }
 
     it 'adds a message composed of parts to the queue' do
@@ -22,7 +23,6 @@ describe Monedo::Monitor do
     context 'when adding a message to the queue' do
       it 'ignores non-sequential parts' do
         bad_address_part = "POCSAG1200-: Address:    9999  Function: 0"
-        bad_alpha_part = "POCSAG1200-: Alpha: 999<ESC><RS>H,<VT><FF><CR>(1s4K<"
         input = [bad_address_part, message_parts, bad_alpha_part].flatten
         monitor = Monedo::Monitor.new(input, StringIO.new)
         monitor.run
@@ -32,6 +32,14 @@ describe Monedo::Monitor do
 
       it 'ignores incomplete parts' do
         input = [address_part, numeric_part].flatten
+        monitor = Monedo::Monitor.new(input, StringIO.new)
+        monitor.run
+
+        expect(monitor.queue.length).to eq(0)
+      end
+
+      it 'ignores messages with a malformed alpha parts' do
+        input = [address_part, numeric_part, bad_alpha_part].flatten
         monitor = Monedo::Monitor.new(input, StringIO.new)
         monitor.run
 
