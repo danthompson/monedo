@@ -15,13 +15,13 @@ module Monedo
     end
 
     def run
-      message = {}
+      message = Message.new
 
       @input.each do |line|
 
         compose(message, line)
 
-        if valid?(message)
+        if message.valid?
           @queue << message.clone
           display(message)
           message.clear
@@ -31,29 +31,21 @@ module Monedo
     end
 
     def display(message)
-      @output.puts message[:address],
-                   message[:numeric],
-                   message[:alpha]
+      @output.puts message.address,
+                   message.numeric,
+                   message.alpha
     end
 
     def compose(message, line)
       case
       when !!(line =~ /Address:/)
         message.clear
-        message.merge! pluck_address_data(line)
+        message.address = pluck_address_data(line)
       when !!(line =~ /Numeric:/)
-        message.merge! pluck_numeric_data(line)
+        message.numeric = pluck_numeric_data(line)
       when !!(line =~ /Alpha:/)
-        message.merge! pluck_alpha_data(line)
+        message.alpha = pluck_alpha_data(line)
       end
-    end
-
-    def composed?(message)
-      [:address, :numeric, :alpha].all? { |k| message.key?(k) }
-    end
-
-    def valid?(message)
-      composed?(message) && !!message[:alpha].index(/\w\s\w/)
     end
 
     def pluck_address_data(line)
@@ -71,7 +63,7 @@ module Monedo
     def pluck_data(key, pattern, line)
       data = line[/(?<=#{key.to_s}:)(.*)/i][/#{pattern}/i]
 
-      (data.nil? || data.strip.empty?) ? {} : { key => data.strip }
+      data.strip if data
     end
   end
 
