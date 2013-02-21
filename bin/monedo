@@ -5,4 +5,9 @@ $:.unshift File.expand_path("../../lib", __FILE__)
 
 require 'monedo'
 
+trap("INT") do
+  $stdout.puts "\nExiting Monedo...\n"
+  exit
+end
+
 Monedo::Monitor.run
