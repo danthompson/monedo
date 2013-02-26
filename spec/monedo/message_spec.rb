@@ -5,8 +5,9 @@ describe Monedo::Message do
     it 'clears the message values' do
       message = Monedo::Message.new('123','1-23','now is the time')
       message.clear
+      values = [message.address, message.numeric, message.alpha]
 
-      expect(message.values.all?).to eq(false)
+      expect(values.all?).to eq(false)
     end
   end
 

@@ -38,9 +38,14 @@ module Monedo
     def compose(message, raw)
       line = LineParser.new(raw)
 
-      if line.kind
-        message.clear if line.address?
-        message[line.kind] = line.data
+      case line.kind
+      when :address
+        message.clear
+        message.address = line.data
+      when :numeric
+        message.numeric = line.data
+      when :alpha
+        message.alpha = line.data
       end
     end
   end

@@ -1,9 +1,9 @@
 module Monedo
 
   class LineParser
-    def initialize(line, kinds = Message.members)
+    def initialize(line)
       @line = line
-      @kinds = kinds
+      @kinds = [:address, :numeric, :alpha]
     end
 
     def kind
@@ -18,10 +18,6 @@ module Monedo
                 when :numeric then parse_numeric
                 when :alpha then parse_alpha
                 end
-    end
-
-    def address?
-      kind == :address
     end
 
     private
