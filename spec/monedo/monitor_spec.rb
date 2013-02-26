@@ -11,52 +11,42 @@ describe Monedo::Monitor do
     let(:alpha_part) { "POCSAG1200-: Alpha: #{alpha} <EOT><NUL>" }
     let(:bad_alpha_part) { "POCSAG1200-: Alpha: 999<ESC><RS>H,<VT><FF><CR>(1" }
     let(:message_parts) { [ address_part, numeric_part, alpha_part ] }
+    let(:output) { StringIO.new }
+    let(:output_lines) { output.rewind; output.readlines.map(&:chomp) }
 
-    it 'adds a message composed of parts to the queue' do
+    it 'displays information from parts collected' do
       input = message_parts
-      monitor = Monedo::Monitor.new(input, StringIO.new)
+      monitor = Monedo::Monitor.new(input, output)
       monitor.run
 
-      expect(monitor.queue.length).to eq(1)
+      expect([address, numeric, alpha]).to eq(output_lines)
     end
 
-    context 'when adding a message to the queue' do
-      it 'ignores non-sequential parts' do
-        bad_address_part = "POCSAG1200-: Address:    9999  Function: 0"
-        input = [bad_address_part, message_parts, bad_alpha_part].flatten
-        monitor = Monedo::Monitor.new(input, StringIO.new)
-        monitor.run
+    it 'ignores non-sequential parts' do
+      bad_address_part = "POCSAG1200-: Address:    9999  Function: 0"
+      input = [bad_address_part, message_parts, bad_alpha_part].flatten
+      monitor = Monedo::Monitor.new(input, output)
+      monitor.run
 
-        expect(monitor.queue.length).to eq(1)
-      end
-
-      it 'ignores incomplete parts' do
-        input = [address_part, numeric_part].flatten
-        monitor = Monedo::Monitor.new(input, StringIO.new)
-        monitor.run
-
-        expect(monitor.queue.length).to eq(0)
-      end
-
-      it 'ignores messages with a malformed alpha parts' do
-        input = [address_part, numeric_part, bad_alpha_part].flatten
-        monitor = Monedo::Monitor.new(input, StringIO.new)
-        monitor.run
-
-        expect(monitor.queue.length).to eq(0)
-      end
-
-      it 'extracts essential information from the parts' do
-        input = message_parts
-        monitor = Monedo::Monitor.new(input, StringIO.new)
-        monitor.run
-
-        message = monitor.queue.first
-        expect(message[:address]).to eq(address)
-        expect(message[:numeric]).to eq(numeric)
-        expect(message[:alpha]).to eq(alpha)
-      end
+      expect([address, numeric, alpha]).to eq(output_lines)
     end
+
+    it 'ignores incomplete parts' do
+      input = [address_part, numeric_part]
+      monitor = Monedo::Monitor.new(input, output)
+      monitor.run
+
+      expect(output_lines.length).to eq(0)
+    end
+
+    it 'ignores messages with malformed alpha parts' do
+      input = [address_part, numeric_part, bad_alpha_part]
+      monitor = Monedo::Monitor.new(input, output)
+      monitor.run
+
+      expect(output_lines.length).to eq(0)
+    end
+
   end
 
 end

@@ -3,7 +3,6 @@
 module Monedo
 
   class Monitor
-    attr_reader :queue
 
     def self.run
       monitor = new($stdin, $stdout)
@@ -13,7 +12,6 @@ module Monedo
     def initialize(input, output)
       @input = input
       @output = output
-      @queue = []
     end
 
     def run
@@ -24,7 +22,6 @@ module Monedo
         compose(message, line)
 
         if message.valid?
-          @queue << message.clone
           display(message)
           message.clear
         end
