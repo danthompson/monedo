@@ -29,4 +29,13 @@ describe Monedo::Message do
       expect(message.valid?).to eq(false)
     end
   end
+
+  describe '#to_s' do
+    it 'returns the message in log like format' do
+      message = Monedo::Message.new('123', '1-23', 'now is the time')
+      line = "address=123 numeric=\"1-23\" alpha=\"now is the time\""
+
+      expect(message.to_s).to eq(line)
+    end
+  end
 end

@@ -32,9 +32,7 @@ module Monedo
     private
 
     def display(message)
-      @output.puts message.address,
-                   message.numeric,
-                   message.alpha
+      @output.puts message
     end
 
     def compose(message, raw)

@@ -11,15 +11,16 @@ describe Monedo::Monitor do
     let(:alpha_part) { "POCSAG1200-: Alpha: #{alpha} <EOT><NUL>" }
     let(:bad_alpha_part) { "POCSAG1200-: Alpha: 999<ESC><RS>H,<VT><FF><CR>(1" }
     let(:message_parts) { [ address_part, numeric_part, alpha_part ] }
+    let(:message_line) { "#{Monedo::Message.new(address, numeric, alpha)}\n" }
     let(:output) { StringIO.new }
-    let(:output_lines) { output.rewind; output.readlines.map(&:chomp) }
 
     it 'displays information from parts collected' do
       input = message_parts
       monitor = Monedo::Monitor.new(input, output)
       monitor.run
+      output.rewind
 
-      expect([address, numeric, alpha]).to eq(output_lines)
+      expect(output.read).to eq(message_line)
     end
 
     it 'ignores non-sequential parts' do
@@ -27,24 +28,27 @@ describe Monedo::Monitor do
       input = [bad_address_part, message_parts, bad_alpha_part].flatten
       monitor = Monedo::Monitor.new(input, output)
       monitor.run
+      output.rewind
 
-      expect([address, numeric, alpha]).to eq(output_lines)
+      expect(output.read).to eq(message_line)
     end
 
     it 'ignores incomplete parts' do
       input = [address_part, numeric_part]
       monitor = Monedo::Monitor.new(input, output)
       monitor.run
+      output.rewind
 
-      expect(output_lines.length).to eq(0)
+      expect(output.read.length).to eq(0)
     end
 
     it 'ignores messages with malformed alpha parts' do
       input = [address_part, numeric_part, bad_alpha_part]
       monitor = Monedo::Monitor.new(input, output)
       monitor.run
+      output.rewind
 
-      expect(output_lines.length).to eq(0)
+      expect(output.read.length).to eq(0)
     end
 
   end
