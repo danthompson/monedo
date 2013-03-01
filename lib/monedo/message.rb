@@ -10,14 +10,6 @@ module Monedo
       @received_at = received_at
     end
 
-    def clear
-      initialize
-    end
-
-    def valid?
-      [address, numeric, alpha].all? && !!alpha.index(/\w\s\w/)
-    end
-
     def to_s
       "received_at=#{received_at.iso8601} " \
       "address=#{address} " \

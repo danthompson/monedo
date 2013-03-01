@@ -12,41 +12,57 @@ module Monedo
     def initialize(input, output)
       @input = input
       @output = output
+      @parsers = [ Parsers::AddressParser.new,
+                   Parsers::NumericParser.new,
+                   Parsers::AlphaParser.new ]
     end
 
     def run
-      message = Message.new
+      buffer = {}
 
       @input.each do |line|
 
-        compose(message, line)
+        add_to_buffer(line, buffer)
 
-        if message.valid?
+        if composable?(buffer)
+
+          message = compose_message(buffer)
+
           display(message)
-          message.clear
-        end
 
+          buffer.clear
+        end
       end
+
     end
 
     private
 
-    def display(message)
-      @output.puts message
+    def add_to_buffer(line, buffer)
+      return unless parser = match_parser(line)
+
+      buffer.clear if parser.first_line?
+      buffer[parser.kind] = parser.parse(line)
     end
 
-    def compose(message, raw)
-      line = LineParser.new(raw)
+    def match_parser(line)
+      @parsers.detect{ |p| p.match?(line) }
+    end
 
-      case line.kind
-      when :address
-        message.clear
-        message.address = line.data
-      when :numeric
-        message.numeric = line.data
-      when :alpha
-        message.alpha = line.data
-      end
+    def composable?(buffer)
+      parser_kinds.all? { |k| buffer.key?(k) && !buffer[k].nil? }
+    end
+
+    def parser_kinds
+      @parser_kinds ||= @parsers.map(&:kind)
+    end
+
+    def compose_message(data)
+      Message.new(data[:address], data[:numeric], data[:alpha])
+    end
+
+    def display(message)
+      @output.puts message
     end
   end
 
