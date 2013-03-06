@@ -24,9 +24,7 @@ module Monedo
 
         add_to_buffer(line, buffer)
 
-        if composable?(buffer)
-
-          message = compose_message(buffer)
+        if message = MessageComposer.new(buffer).compose
 
           display(message)
 
@@ -47,18 +45,6 @@ module Monedo
 
     def match_parser(line)
       @parsers.detect{ |p| p.match?(line) }
-    end
-
-    def composable?(buffer)
-      parser_kinds.all? { |k| buffer.key?(k) && !buffer[k].nil? }
-    end
-
-    def parser_kinds
-      @parser_kinds ||= @parsers.map(&:kind)
-    end
-
-    def compose_message(data)
-      Message.new(data[:address], data[:numeric], data[:alpha])
     end
 
     def display(message)
