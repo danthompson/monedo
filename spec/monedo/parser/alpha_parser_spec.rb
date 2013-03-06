@@ -6,11 +6,11 @@ module Monedo
   module Parsers
 
     describe AlphaParser do
-      let(:parser) { AlphaParser.new }
+      subject { AlphaParser.new }
 
       describe '#kind' do
         it 'returns kind as alpha' do
-          expect(parser.kind).to eq(:alpha)
+          expect(subject.kind).to eq(:alpha)
         end
       end
 
@@ -19,13 +19,13 @@ module Monedo
           alpha = 'Message» for 2222'
           alpha_line = "POCSAG1200-: Alpha: #{alpha} <EOT><NUL>"
 
-          expect(parser.parse(alpha_line)).to eq(alpha)
+          expect(subject.parse(alpha_line)).to eq(alpha)
         end
       end
 
       describe '#first_line?' do
         it 'returns false for a alpha line' do
-          expect(parser.first_line?).to eq(false)
+          expect(subject.first_line?).to eq(false)
         end
       end
     end
