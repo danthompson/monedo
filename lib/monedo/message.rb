@@ -10,6 +10,10 @@ module Monedo
       message = Message.new(hash[:address],
                             hash[:numeric],
                             hash[:alpha])
+
+      yield message if block_given?
+
+      message
     end
 
     attr_accessor :address, :numeric, :alpha, :received_at

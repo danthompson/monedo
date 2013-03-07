@@ -24,14 +24,13 @@ module Monedo
 
         add_to_buffer(line, buffer)
 
-        if message = Message.from_hash(buffer)
+        Message.from_hash(buffer) do |message|
 
           display(message)
 
           buffer.clear
         end
       end
-
     end
 
     private
