@@ -24,7 +24,7 @@ module Monedo
 
         add_to_buffer(line, buffer)
 
-        if message = MessageComposer.new(buffer).compose
+        if message = Message.from_hash(buffer)
 
           display(message)
 
