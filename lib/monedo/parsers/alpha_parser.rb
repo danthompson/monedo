@@ -10,7 +10,7 @@ module Monedo
 
       def parse(line)
         super
-        data = line[/(?<=^|>)[^><]+?(?=<|$)/].strip
+        data = line[/(?<=^|>)[^><]+?(?=<|$)/].to_s.strip
         data unless corrupt?(data)
       end
 

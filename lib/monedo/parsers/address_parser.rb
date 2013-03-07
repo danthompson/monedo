@@ -10,7 +10,7 @@ module Monedo
 
       def parse(line)
         super
-        line[/\s\s\s\s(\d+)/i].strip
+        line[/\s\s\s\s(\d+)/i].to_s.strip
       end
 
       def first_line?
