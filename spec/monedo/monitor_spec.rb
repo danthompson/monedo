@@ -10,7 +10,6 @@ module Monedo
       let(:address_part) { "POCSAG1200-: Address:    #{address}  Function: 0" }
       let(:numeric_part) { "POCSAG1200-: Numeric: #{numeric}" }
       let(:alpha_part) { "POCSAG1200-: Alpha: #{alpha} <EOT><NUL>" }
-      let(:bad_alpha_part) { "POCSAG1200-: Alpha: 999<ESC><RS>H,<VT><FF><CR>(1" }
       let(:message_parts) { [ address_part, numeric_part, alpha_part ] }
       let(:message_line) { "#{Message.new(address, numeric, alpha)}\n" }
       let(:output) { StringIO.new }
@@ -26,6 +25,7 @@ module Monedo
 
       it 'ignores non-sequential parts' do
         bad_address_part = "POCSAG1200-: Address:    9999  Function: 0"
+        bad_alpha_part = "POCSAG1200-: Alpha: non sequential alpha part"
         input = [bad_address_part, message_parts, bad_alpha_part].flatten
         monitor = Monitor.new(input, output)
         monitor.run
@@ -44,7 +44,8 @@ module Monedo
       end
 
       it 'ignores messages with malformed alpha parts' do
-        input = [address_part, numeric_part, bad_alpha_part]
+        malformed_alpha_part = "POCSAG1200-: Alpha: 999<ESC><RS>H,<VT><CR>(1"
+        input = [address_part, numeric_part, malformed_alpha_part]
         monitor = Monitor.new(input, output)
         monitor.run
         output.rewind
