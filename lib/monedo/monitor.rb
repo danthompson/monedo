@@ -15,35 +15,37 @@ module Monedo
       @parsers = [ Parsers::AddressParser.new,
                    Parsers::NumericParser.new,
                    Parsers::AlphaParser.new ]
+      @buffer = {}
     end
 
     def run
-      buffer = {}
-
       @input.each do |line|
 
-        add_to_buffer(line, buffer)
+        buffer_data(line)
 
-        Message.from_hash(buffer) do |message|
+        process_buffer
 
-          display(message)
-
-          buffer.clear
-        end
       end
     end
 
     private
 
-    def add_to_buffer(line, buffer)
-      return unless parser = match_parser(line)
+    attr_accessor :buffer
+
+    def buffer_data(line)
+      return unless parser = @parsers.detect{ |p| p.match?(line) }
 
       buffer.clear if parser.first_line?
-      buffer[parser.kind] = parser.parse(line)
+      buffer.store(parser.kind, parser.parse(line))
     end
 
-    def match_parser(line)
-      @parsers.detect{ |p| p.match?(line) }
+    def process_buffer
+      Message.from_hash(buffer) do |message|
+
+        display(message)
+
+        buffer.clear
+      end
     end
 
     def display(message)
