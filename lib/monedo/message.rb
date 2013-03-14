@@ -26,10 +26,7 @@ module Monedo
     end
 
     def to_s
-      "received_at=#{received_at} " \
-      "address=#{address} " \
-      "numeric=\"#{numeric}\" " \
-      "alpha=\"#{alpha}\""
+      "#{received_at} ##{address} #{alpha}"
     end
   end
 
