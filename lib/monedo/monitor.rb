@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 module Monedo
   class Monitor
     def self.run
