@@ -1,13 +1,14 @@
 module Monedo
   class Monitor
     def self.run
-      monitor = new($stdin, $stdout)
+      monitor = new
       monitor.run
     end
 
-    def initialize(input, output)
+    def initialize(input = $stdin, output = $stdout)
       @input = input
-      @output = output
+      @logger = Logger.new(output)
+      @logger.formatter = proc { |*, message| "#{message}\n" }
       @parsers = [ Parsers::AddressParser.new,
                    Parsers::NumericParser.new,
                    Parsers::AlphaParser.new ]
@@ -18,13 +19,14 @@ module Monedo
       @input.each do |line|
 
         buffer_data(line)
+
         process_buffer
       end
     end
 
     private
 
-    attr_accessor :buffer
+    attr_reader :buffer, :logger
 
     def buffer_data(line)
       return unless parser = @parsers.detect{ |p| p.match?(line) }
@@ -36,14 +38,10 @@ module Monedo
     def process_buffer
       Message.from_hash(buffer) do |message|
 
-        display(message)
+        logger.info message
 
         buffer.clear
       end
-    end
-
-    def display(message)
-      @output.puts message
     end
   end
 end

@@ -1,4 +1,5 @@
 require 'time'
+require 'logger'
 require 'monedo/version'
 require 'monedo/monitor'
 require 'monedo/message'
