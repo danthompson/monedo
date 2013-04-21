@@ -1,6 +1,5 @@
 module Monedo
   module Parsers
-
     class AlphaParser
       include Parser
 
@@ -20,6 +19,5 @@ module Monedo
         !data.index(/\w\s\w/)
       end
     end
-
   end
 end

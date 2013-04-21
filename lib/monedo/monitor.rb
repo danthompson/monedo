@@ -1,9 +1,7 @@
 # encoding: utf-8
 
 module Monedo
-
   class Monitor
-
     def self.run
       monitor = new($stdin, $stdout)
       monitor.run
@@ -22,9 +20,7 @@ module Monedo
       @input.each do |line|
 
         buffer_data(line)
-
         process_buffer
-
       end
     end
 
@@ -52,5 +48,4 @@ module Monedo
       @output.puts message
     end
   end
-
 end

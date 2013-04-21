@@ -1,6 +1,5 @@
 module Monedo
   module Parsers
-
     class AddressParser
       include Parser
 
@@ -17,6 +16,5 @@ module Monedo
         true
       end
     end
-
   end
 end

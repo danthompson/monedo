@@ -1,7 +1,5 @@
 module Monedo
-
   class Message
-
     def self.from_hash(hash)
       return unless [:address, :numeric, :alpha].all? do |k|
         hash.key?(k) && !hash[k].nil?
@@ -29,5 +27,4 @@ module Monedo
       "#{received_at} ##{address} #{alpha}"
     end
   end
-
 end

@@ -1,7 +1,5 @@
 module Monedo
-
   module Parser
-
     def match?(line)
      !!(/(?<=#{kind.to_s}:)/i =~ line)
     end
@@ -14,5 +12,4 @@ module Monedo
       false
     end
   end
-
 end

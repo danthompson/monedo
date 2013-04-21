@@ -1,6 +1,5 @@
 module Monedo
   module Parsers
-
     class NumericParser
       include Parser
 
@@ -13,6 +12,5 @@ module Monedo
         line[/\s(.*)/i].to_s.strip
       end
     end
-
   end
 end
