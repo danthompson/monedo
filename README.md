@@ -1,5 +1,7 @@
 # Monedo
 
+**This is very much a WIP. I'm sure it's not useful to anyone but myself at the moment.**
+
 TODO: Write a gem description
 
 ## Installation
